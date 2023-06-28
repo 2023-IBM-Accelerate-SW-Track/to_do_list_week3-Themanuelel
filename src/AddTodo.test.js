@@ -41,3 +41,21 @@ afterEach(() => {
  test('test that App component renders different colors for past due events', () => {
   render(<App />);
  });
+
+ test('test that no duplicates', () => {
+  render(<App />);
+  const inputTask = screen.getByRole('textbox', {name: /Add New Item/i});
+  const inputDate = screen.getByPlaceholderText("MM/DD/YYYY");
+  const element = screen.getByRole('button', {name: /Add/i});
+  const dueDate = "07/30/2023";
+  fireEvent.change(inputTask, { target: { value: "History Test"}});
+  fireEvent.change(inputDate, { target: { value: dueDate}});
+  fireEvent.click(element);
+  fireEvent.change(inputTask, { target: { value: "History Test"}});
+  fireEvent.change(inputDate, { target: { value: dueDate}});
+  fireEvent.click(element);
+  const check = screen.getByText(/History Test/i);
+  const checkDate = screen.getByText(new RegExp(dueDate, "i"));
+  expect(check).toBeInTheDocument();
+  expect(checkDate).toBeInTheDocument();
+ });
